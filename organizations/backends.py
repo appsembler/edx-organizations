@@ -12,6 +12,10 @@ class OrganizationMemberMicrositeBackend(ModelBackend):
     def authenticate(self, username=None, password=None, **kwargs):
         user = super(OrganizationMemberMicrositeBackend, self).authenticate(username, password, **kwargs)
         if user:
+            # superuser can log into any microsite
+            if user.is_superuser:
+                return user
+
             domain = kwargs['request'].META.get('HTTP_HOST', None)
             current_microsite = Microsite.get_microsite_for_domain(domain)
             user_organizations = set(user.organizations.values_list('short_name', flat=True))

@@ -9,8 +9,14 @@ offers one programmatic API -- api.py for direct Python integration.
 
 from django.db import models
 from django.conf import settings
+from django.contrib.auth.models import User
+from django.db.models import signals
+from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _
+from microsite_configuration import microsite
 from model_utils.models import TimeStampedModel
+
+from microsite_configuration.models import Microsite
 
 
 class Organization(TimeStampedModel):
@@ -60,3 +66,18 @@ class UserOrganizationMapping(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
     organization = models.ForeignKey(Organization)
     is_active = models.BooleanField(default=False)
+
+
+@receiver(signals.post_save, sender=User)
+def my_callback(sender, **kwargs):
+    user = kwargs.get('instance')
+    if microsite.is_request_in_microsite() and user and not user.is_superuser:
+        current_microsite = Microsite.get_microsite_for_domain(microsite.get_value('site_domain'))
+        microsite_organizations = current_microsite.get_organizations()
+        for organization_name in microsite_organizations:
+            try:
+                organization = Organization.objects.get(short_name=organization_name)
+            except Organization.DoesNotExist:
+                continue
+            user_org, created = UserOrganizationMapping.objects.get_or_create(
+                user=user, organization=organization)

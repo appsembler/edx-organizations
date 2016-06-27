@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='edx-organizations',
-    version='0.2.1',
+    version='0.2.2',
     description='Organization management module for Open edX',
     long_description=open('README.md').read(),
     author='edX',
@@ -24,7 +24,7 @@ setup(
     ],
     install_requires=[
         "django>=1.8",
-        "django-model-utils==1.4.0",
+        "django-model-utils==2.3.0",
     ],
     tests_require=[
         "coverage==3.7.1",

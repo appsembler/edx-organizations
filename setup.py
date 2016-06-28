@@ -24,7 +24,7 @@ setup(
     ],
     install_requires=[
         "django>=1.8",
-        "django-model-utils==2.3.0",
+        "django-model-utils==2.3",
     ],
     tests_require=[
         "coverage==3.7.1",

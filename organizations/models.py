@@ -8,6 +8,7 @@ offers one programmatic API -- api.py for direct Python integration.
 """
 
 from django.db import models
+from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 from model_utils.models import TimeStampedModel
 
@@ -27,6 +28,11 @@ class Organization(TimeStampedModel):
         null=True, blank=True, max_length=255
     )
     active = models.BooleanField(default=True)
+    users = models.ManyToManyField(
+        settings.AUTH_USER_MODEL,
+        through='UserOrganizationMapping',
+        related_name="organizations"
+    )
 
     def __unicode__(self):
         return u"{}".format(self.name)
@@ -48,3 +54,9 @@ class OrganizationCourse(TimeStampedModel):
         unique_together = (("course_id", "organization"),)
         verbose_name = _('Link Course')
         verbose_name_plural = _('Link Courses')
+
+
+class UserOrganizationMapping(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL)
+    organization = models.ForeignKey(Organization)
+    is_active = models.BooleanField(default=False)

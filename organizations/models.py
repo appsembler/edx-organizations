@@ -15,7 +15,7 @@ from model_utils.models import TimeStampedModel
 
 class Organization(TimeStampedModel):
     """
-    An Organizatio is a representation of an entity which publishes/provides
+    An Organization is a representation of an entity which publishes/provides
     one or more courses delivered by the LMS. Organizations have a base set of
     metadata describing the organization, including id, name, and description.
     """
@@ -32,6 +32,10 @@ class Organization(TimeStampedModel):
         settings.AUTH_USER_MODEL,
         through='UserOrganizationMapping',
         related_name="organizations"
+    )
+    sites = models.ManyToManyField(
+        'sites.Site',
+        related_name='organizations',
     )
 
     def __unicode__(self):

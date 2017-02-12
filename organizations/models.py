@@ -6,7 +6,7 @@ Database ORM models managed by this Django app
 Please do not integrate directly with these models!!!  This app currently
 offers one programmatic API -- api.py for direct Python integration.
 """
-
+from django.contrib.sites.models import Site
 from django.db import models
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
@@ -63,4 +63,12 @@ class OrganizationCourse(TimeStampedModel):
 class UserOrganizationMapping(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
     organization = models.ForeignKey(Organization)
-    is_active = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
+    is_amc_admin = models.BooleanField(default=False)
+
+
+class UserSiteMapping(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL)
+    site = models.ForeignKey(Site)
+    is_active = models.BooleanField(default=True)
+    is_amc_admin = models.BooleanField(default=False)

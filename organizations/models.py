@@ -6,7 +6,7 @@ Database ORM models managed by this Django app
 Please do not integrate directly with these models!!!  This app currently
 offers one programmatic API -- api.py for direct Python integration.
 """
-
+from django.contrib.sites.models import Site
 from django.db import models
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
@@ -15,7 +15,7 @@ from model_utils.models import TimeStampedModel
 
 class Organization(TimeStampedModel):
     """
-    An Organizatio is a representation of an entity which publishes/provides
+    An Organization is a representation of an entity which publishes/provides
     one or more courses delivered by the LMS. Organizations have a base set of
     metadata describing the organization, including id, name, and description.
     """
@@ -27,6 +27,7 @@ class Organization(TimeStampedModel):
         help_text=_(u'Please add only .PNG files for logo images.'),
         null=True, blank=True, max_length=255
     )
+    site = models.OneToOneField(Site, related_name="organization", null=True, blank=True)
     active = models.BooleanField(default=True)
     users = models.ManyToManyField(
         settings.AUTH_USER_MODEL,
@@ -59,4 +60,4 @@ class OrganizationCourse(TimeStampedModel):
 class UserOrganizationMapping(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
     organization = models.ForeignKey(Organization)
-    is_active = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)

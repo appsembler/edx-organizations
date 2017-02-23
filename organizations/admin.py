@@ -4,7 +4,13 @@
 django admin pages for organization models
 """
 from django.contrib import admin
-from organizations.models import (Organization, OrganizationCourse)
+
+from organizations.models import (Organization, OrganizationCourse, UserOrganizationMapping)
+
+
+class UserOrganizationMappingInline(admin.TabularInline):
+    model = UserOrganizationMapping
+    extra = 1
 
 
 class OrganizationAdmin(admin.ModelAdmin):
@@ -12,8 +18,9 @@ class OrganizationAdmin(admin.ModelAdmin):
     Admin for the Organization table.
     soft-delete on the organizations
     """
-    list_display = ('name', 'short_name', 'description', 'logo', 'created', 'active')
+    list_display = ('name', 'short_name', 'site', 'logo', 'created', 'active')
     readonly_fields = ('created',)
+    inlines = [UserOrganizationMappingInline,]
     ordering = ['created']
     actions = ['activate_selected', 'deactivate_selected']
 

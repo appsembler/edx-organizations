@@ -4,7 +4,12 @@
 django admin pages for organization models
 """
 from django.contrib import admin
-from organizations.models import (Organization, OrganizationCourse)
+from organizations.models import (Organization, OrganizationCourse, UserOrganizationMapping)
+
+
+class UserOrganizationMappingInline(admin.TabularInline):
+    model = UserOrganizationMapping
+    extra = 1
 
 
 class OrganizationAdmin(admin.ModelAdmin):
@@ -15,6 +20,7 @@ class OrganizationAdmin(admin.ModelAdmin):
     list_display = ('name', 'short_name', 'description', 'logo', 'created', 'active')
     readonly_fields = ('created',)
     ordering = ['created']
+    inlines = [UserOrganizationMappingInline, ]
     actions = ['activate_selected', 'deactivate_selected']
 
     def get_actions(self, request):

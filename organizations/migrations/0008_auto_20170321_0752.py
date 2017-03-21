@@ -10,7 +10,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AlterField(
-            model_name='Organization',
+            model_name='organization',
             name='uuid',
             field=models.UUIDField(default=uuid.uuid4, unique=True),
         ),

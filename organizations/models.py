@@ -6,6 +6,7 @@ Database ORM models managed by this Django app
 Please do not integrate directly with these models!!!  This app currently
 offers one programmatic API -- api.py for direct Python integration.
 """
+import uuid
 from django.contrib.sites.models import Site
 from django.db import models
 from django.conf import settings
@@ -37,9 +38,14 @@ class Organization(TimeStampedModel):
         'sites.Site',
         related_name='organizations',
     )
+    uuid = models.UUIDField(default=uuid.uuid4, unique=True)
 
     def __unicode__(self):
         return u"{}".format(self.name)
+
+    def get_tier_for_org(self):
+        from tiers.models import Tier
+        Tier.objects.get(organization=self.uuid)
 
 
 class OrganizationCourse(TimeStampedModel):

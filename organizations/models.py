@@ -45,7 +45,13 @@ class Organization(TimeStampedModel):
 
     def get_tier_for_org(self):
         from tiers.models import Tier
-        Tier.objects.get(organization=self.uuid)
+        t = Tier.objects.defer('organization').get(organization__uuid=self.uuid)
+        tier_object = Tier(name=t.name,
+                tier_enforcement_exempt=t.tier_enforcement_exempt,
+                tier_enforcement_grace_period=t.tier_enforcement_grace_period,
+                tier_expires_at=t.tier_expires_at,
+                organization=self)
+        return tier_object
 
 
 class OrganizationCourse(TimeStampedModel):

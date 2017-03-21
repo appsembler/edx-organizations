@@ -38,14 +38,14 @@ class Organization(TimeStampedModel):
         'sites.Site',
         related_name='organizations',
     )
-    uuid = models.UUIDField(default=uuid.uuid4, unique=True)
+    edx_uuid = models.UUIDField(default=uuid.uuid4, unique=True)
 
     def __unicode__(self):
         return u"{}".format(self.name)
 
     def get_tier_for_org(self):
         from tiers.models import Tier
-        t = Tier.objects.defer('organization').get(organization__uuid=self.uuid)
+        t = Tier.objects.defer('organization').get(organization__edx_uuid=self.edx_uuid)
         tier_object = Tier(name=t.name,
                 tier_enforcement_exempt=t.tier_enforcement_exempt,
                 tier_enforcement_grace_period=t.tier_enforcement_grace_period,

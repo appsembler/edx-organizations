@@ -4,7 +4,7 @@ import uuid
 def gen_uuid(apps, schema_editor):
     Organization = apps.get_model('organizations', 'Organization')
     for row in Organization.objects.all():
-        row.uuid = uuid.uuid4()
+        row.edx_uuid = uuid.uuid4()
         row.save()
 
 class Migration(migrations.Migration):

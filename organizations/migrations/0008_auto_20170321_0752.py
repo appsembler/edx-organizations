@@ -11,7 +11,7 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AlterField(
             model_name='organization',
-            name='uuid',
+            name='edx_uuid',
             field=models.UUIDField(default=uuid.uuid4, unique=True),
         ),
     ]

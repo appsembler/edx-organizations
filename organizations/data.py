@@ -122,6 +122,7 @@ def create_organization(organization):
             short_name=organization_obj.short_name,
             description=organization_obj.description,
             logo=organization_obj.logo,
+            edx_uuid=organization_obj.edx_uuid,
             active=True
         )
     return serializers.serialize_organization(organization)

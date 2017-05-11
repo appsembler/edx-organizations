@@ -117,13 +117,16 @@ def create_organization(organization):
         if not organization.active:
             _activate_organization(organization_obj)
     except internal.Organization.DoesNotExist:
+        extra_params = {}
+        if organization_obj.edx_uuid:
+            extra_params['edx_uuid'] = organization_obj.edx_uuid
         organization = internal.Organization.objects.create(
             name=organization_obj.name,
             short_name=organization_obj.short_name,
             description=organization_obj.description,
             logo=organization_obj.logo,
-            edx_uuid=organization_obj.edx_uuid,
-            active=True
+            active=True,
+            **extra_params
         )
     return serializers.serialize_organization(organization)
 

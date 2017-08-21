@@ -1,6 +1,3 @@
-# pylint: disable=no-init
-# pylint: disable=old-style-class
-# pylint: disable=too-few-public-methods
 """
 Database ORM models managed by this Django app
 Please do not integrate directly with these models!!!  This app currently
@@ -20,12 +17,12 @@ class Organization(TimeStampedModel):
     one or more courses delivered by the LMS. Organizations have a base set of
     metadata describing the organization, including id, name, and description.
     """
-    name = models.CharField(verbose_name="Long name", max_length=255, db_index=True)
-    short_name = models.CharField(max_length=255, db_index=True)
-    description = models.TextField()
+    name = models.CharField(max_length=255, db_index=True)
+    short_name = models.CharField(max_length=255, db_index=True, verbose_name='Short Name')
+    description = models.TextField(null=True, blank=True)
     logo = models.ImageField(
         upload_to='organization_logos',
-        help_text=_(u'Please add only .PNG files for logo images.'),
+        help_text=_('Please add only .PNG files for logo images. This logo will be used on certificates.'),
         null=True, blank=True, max_length=255
     )
     active = models.BooleanField(default=True)
@@ -41,7 +38,7 @@ class Organization(TimeStampedModel):
     edx_uuid = models.UUIDField(default=uuid.uuid4, unique=True)
 
     def __unicode__(self):
-        return u"{}".format(self.name)
+        return u"{name} ({short_name})".format(name=self.name, short_name=self.short_name)
 
     def get_tier_for_org(self):
         from tiers.models import Tier
@@ -61,13 +58,13 @@ class OrganizationCourse(TimeStampedModel):
     (in the Django/ORM sense) the modeling and integrity is limited to that
     of specifying course identifier strings in this model.
     """
-    course_id = models.CharField(max_length=255, db_index=True)
+    course_id = models.CharField(max_length=255, db_index=True, verbose_name='Course ID')
     organization = models.ForeignKey(Organization, db_index=True)
     active = models.BooleanField(default=True)
 
-    class Meta:
+    class Meta(object):
         """ Meta class for this Django model """
-        unique_together = (("course_id", "organization"),)
+        unique_together = (('course_id', 'organization'),)
         verbose_name = _('Link Course')
         verbose_name_plural = _('Link Courses')
 

@@ -1,6 +1,7 @@
 from django.db import migrations, models
 import uuid
 
+# APPSEMBLER MIGRATION
 
 class Migration(migrations.Migration):
 

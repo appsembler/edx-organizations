@@ -71,7 +71,7 @@ def _inactivate_organization(organization):
      in internal.Organization.objects.filter(id=organization.id, active=True)]
 
 
-def _activate_organization_course_relationship(relationship):
+def _activate_organization_course_relationship(relationship):  # pylint: disable=invalid-name
     """
     Activates an inactive organization-course relationship
     """
@@ -84,7 +84,7 @@ def _activate_organization_course_relationship(relationship):
     _activate_record(relationship)
 
 
-def _inactivate_organization_course_relationship(relationship):
+def _inactivate_organization_course_relationship(relationship):  # pylint: disable=invalid-name
     """
     Inactivates an active organization-course relationship
     """
@@ -167,7 +167,7 @@ def fetch_organization(organization_id):
     if not organization_id:
         exceptions.raise_exception("organization", organization, exceptions.InvalidOrganizationException)
     organizations = serializers.serialize_organizations(internal.Organization.objects.filter(active=True))
-    if not len(organizations):
+    if not organizations:
         exceptions.raise_exception("organization", organization, exceptions.InvalidOrganizationException)
     return organizations[0]
 
@@ -183,7 +183,7 @@ def fetch_organization_by_short_name(organization_short_name):
     organizations = serializers.serialize_organizations(internal.Organization.objects.filter(
         active=True, short_name=organization_short_name
     ))
-    if not len(organizations):
+    if not organizations:
         exceptions.raise_exception("organization", organization, exceptions.InvalidOrganizationException)
     return organizations[0]
 

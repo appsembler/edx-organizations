@@ -42,6 +42,11 @@ class OrganizationMemberBackend(ModelBackend):
             user_organizations = set(user.organizations.values_list('short_name', flat=True))
             site_organization = get_value('course_org_filter')
 
+            # check if user is manager of microsite
+            hr_manager = HrManager.objects.filter(user=user, organization__short_name=site_organization)
+            if hr_manager:
+                return user
+
             #make sure user has been granted permission to log into microsite
             mapping = UserOrganizationMapping.objects.filter(
                     organization__short_name=site_organization,
@@ -51,11 +56,6 @@ class OrganizationMemberBackend(ModelBackend):
                 return None
 
             if site_organization in user_organizations:
-                return user
-
-            # check if user is manager of microsite
-            hr_manager = HrManager.objects.filter(user=user, organization__short_name=site_organization)
-            if hr_manager:
                 return user
 
         return None

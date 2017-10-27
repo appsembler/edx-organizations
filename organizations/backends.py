@@ -19,7 +19,8 @@ class DefaultSiteBackend(ModelBackend):
         if user:
             if is_default_site:
                 return user
-            if user.is_superuser:
+            # superusers and staff users can access any site
+            if user.is_superuser or user.is_staff: 
                 return user
         return None
 

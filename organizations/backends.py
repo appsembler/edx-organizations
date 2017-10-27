@@ -4,6 +4,8 @@ from django.core.exceptions import PermissionDenied
 from openedx.core.djangoapps.theming.helpers import get_current_site
 from openedx.core.djangoapps.site_configuration.helpers import is_site_configuration_enabled, get_value
 
+from hr_management.models import HrManager
+
 from .models import UserOrganizationMapping
 
 class DefaultSiteBackend(ModelBackend):
@@ -50,6 +52,12 @@ class OrganizationMemberBackend(ModelBackend):
 
             if site_organization in user_organizations:
                 return user
+
+            # check if user is manager of microsite
+            hr_manager = HrManager.objects.filter(user=user, organization__short_name=site_organization)
+            if hr_manager:
+                return user
+
         return None
 
 

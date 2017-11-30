@@ -55,7 +55,7 @@ class OrganizationMemberBackend(ModelBackend):
             if not mapping or not mapping.first().is_active:
                 return None
 
-            if site_organization in user_organizations:
+            if site_organization.lower() in [ org.lower() for org in user_organizations]:
                 return user
 
         return None

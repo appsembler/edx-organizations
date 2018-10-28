@@ -3,8 +3,10 @@ Database ORM models managed by this Django app
 Please do not integrate directly with these models!!!  This app currently
 offers one programmatic API -- api.py for direct Python integration.
 """
+import re
 import uuid
 from django.contrib.sites.models import Site
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
@@ -18,7 +20,11 @@ class Organization(TimeStampedModel):
     metadata describing the organization, including id, name, and description.
     """
     name = models.CharField(max_length=255, db_index=True)
-    short_name = models.CharField(max_length=255, db_index=True, verbose_name='Short Name')
+    short_name = models.CharField(
+        max_length=255, db_index=True, verbose_name='Short Name',
+        help_text=_('Please do not use spaces or special characters. Only allowed special characters '
+                    'are period (.), hyphen (-) and underscore (_).')
+    )
     description = models.TextField(null=True, blank=True)
     logo = models.ImageField(
         upload_to='organization_logos',
@@ -49,6 +55,12 @@ class Organization(TimeStampedModel):
                 tier_expires_at=t.tier_expires_at,
                 organization=self)
         return tier_object
+
+    def clean(self):
+        if not re.match("^[a-zA-Z0-9._-]*$", self.short_name):
+            raise ValidationError(_('Please do not use spaces or special characters in the short name '
+                                    'field. Only allowed special characters are period (.), hyphen (-) '
+                                    'and underscore (_).'))
 
 
 class OrganizationCourse(TimeStampedModel):

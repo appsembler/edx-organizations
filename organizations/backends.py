@@ -10,8 +10,8 @@ class DefaultSiteBackend(ModelBackend):
     User can log in to the default/root site (edx.appsembler.com) because it is required during the signup.
     Also, superusers (appsembler admins) can log into any site.
     """
-    def authenticate(self, username=None, password=None, **kwargs):
-        user = super(DefaultSiteBackend, self).authenticate(username, password, **kwargs)
+    def authenticate(self, *args, **kwargs):
+        user = super(DefaultSiteBackend, self).authenticate(*args, **kwargs)
         # superuser can log into any microsite
         site = get_current_site()
         is_default_site = site.id == settings.SITE_ID
@@ -29,8 +29,8 @@ class OrganizationMemberBackend(ModelBackend):
     current microsite and compare that to the Organizations the user trying to log in belongs to.
     If there is a match between the two, the user is allowed to log in.
     """
-    def authenticate(self, username=None, password=None, **kwargs):
-        user = super(OrganizationMemberBackend, self).authenticate(username, password, **kwargs)
+    def authenticate(self, *args, **kwargs):
+        user = super(OrganizationMemberBackend, self).authenticate(*args, **kwargs)
         # superuser can log into any microsite
         site = get_current_site()
         is_default_site = site.id == settings.SITE_ID
@@ -47,8 +47,8 @@ class SiteMemberBackend(ModelBackend):
     Extension of the regular ModelBackend that will check whether the user is a member of the currently
     active site.
     """
-    def authenticate(self, username=None, password=None, **kwargs):
-        user = super(SiteMemberBackend, self).authenticate(username, password, **kwargs)
+    def authenticate(self, *args, **kwargs):
+        user = super(SiteMemberBackend, self).authenticate(*args, **kwargs)
         # superuser can log into any microsite
         site = get_current_site()
         is_default_site = site.id == settings.SITE_ID

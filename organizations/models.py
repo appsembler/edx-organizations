@@ -9,6 +9,7 @@ from django.contrib.sites.models import Site
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.conf import settings
+from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 from model_utils.models import TimeStampedModel
 
@@ -81,11 +82,18 @@ class OrganizationCourse(TimeStampedModel):
         verbose_name_plural = _('Link Courses')
 
 
+@python_2_unicode_compatible
 class UserOrganizationMapping(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
     organization = models.ForeignKey(Organization)
     is_active = models.BooleanField(default=True)
     is_amc_admin = models.BooleanField(default=False)
+
+    def __str__(self):
+        return 'UserOrganizationMapping<{email}, {organization}>'.format(
+            email=self.user.email,
+            organization=self.organization.short_name,
+        )
 
 
 class UserSiteMapping(models.Model):

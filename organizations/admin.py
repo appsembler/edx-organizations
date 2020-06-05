@@ -4,10 +4,6 @@ from organizations.models import (Organization, OrganizationCourse, UserOrganiza
 from django.utils.translation import ugettext_lazy as _
 
 
-class UserOrganizationMappingInline(admin.TabularInline):
-    model = UserOrganizationMapping
-    extra = 1
-
 @admin.register(Organization)
 class OrganizationAdmin(admin.ModelAdmin):
     """ Admin for the Organization model. """
@@ -17,7 +13,6 @@ class OrganizationAdmin(admin.ModelAdmin):
     ordering = ('name', 'short_name',)
     readonly_fields = ('created',)
     search_fields = ('name', 'short_name',)
-    inlines = [UserOrganizationMappingInline, ]
     actions = ['activate_selected', 'deactivate_selected']
 
     def get_actions(self, request):
@@ -71,3 +66,35 @@ class OrganizationCourseAdmin(admin.ModelAdmin):
             kwargs['queryset'] = Organization.objects.filter(active=True).order_by('name')
 
         return super(OrganizationCourseAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
+
+
+@admin.register(UserOrganizationMapping)
+class UserOrganizationMappingAdmin(admin.ModelAdmin):
+    list_display = [
+        'email',
+        'username',
+        'organization_name',
+        'is_active',
+        'is_amc_admin',
+    ]
+
+    search_fields = [
+        'user__email',
+        'user__username',
+        'organization__name',
+        'organization__short_name',
+    ]
+
+    list_filter = [
+        'is_active',
+        'is_amc_admin',
+    ]
+
+    def email(self, mapping):
+        return mapping.user.email
+
+    def username(self, mapping):
+        return mapping.user.username
+
+    def organization_name(self, mapping):
+        return mapping.organization.short_name

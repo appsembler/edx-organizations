@@ -37,8 +37,14 @@ class OrganizationMemberBackend(ModelBackend):
         if not is_default_site and is_site_configuration_enabled() and user and not user.is_superuser:
             user_organizations = set(user.organizations.values_list('short_name', flat=True))
             site_organization = get_value('course_org_filter')
-            if site_organization in user_organizations:
-                return user
+            try:
+                if site_organization in user_organizations:
+                    return user
+            except TypeError:
+                # standalone supports multiple course orgs per Site
+                for org in site_organization:
+                    if site_organization in user_organizations:
+                        return user
         return None
 
 

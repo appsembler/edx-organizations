@@ -43,7 +43,7 @@ class OrganizationMemberBackend(ModelBackend):
             except TypeError:
                 # standalone supports multiple course orgs per Site
                 for org in site_organization:
-                    if site_organization in user_organizations:
+                    if org in user_organizations:
                         return user
         return None
 

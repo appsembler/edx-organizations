@@ -1,7 +1,9 @@
 """ Django admin pages for organization models """
 from django.contrib import admin
-from organizations.models import (Organization, OrganizationCourse, UserOrganizationMapping)
 from django.utils.translation import ugettext_lazy as _
+
+from organizations.models import Organization, OrganizationCourse
+from organizations.models import UserOrganizationMapping
 
 
 @admin.register(Organization)

@@ -14,6 +14,7 @@ from django.utils.translation import ugettext_lazy as _
 from model_utils.models import TimeStampedModel
 
 
+@python_2_unicode_compatible
 class Organization(TimeStampedModel):
     """
     An Organization is a representation of an entity which publishes/provides
@@ -44,7 +45,7 @@ class Organization(TimeStampedModel):
     )
     edx_uuid = models.UUIDField(default=uuid.uuid4, unique=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return u"{name} ({short_name})".format(name=self.name, short_name=self.short_name)
 
     def get_tier_for_org(self):
@@ -64,6 +65,7 @@ class Organization(TimeStampedModel):
                                     'and underscore (_).'))
 
 
+@python_2_unicode_compatible
 class OrganizationCourse(TimeStampedModel):
     """
     An OrganizationCourse represents the link between an Organization and a
@@ -80,6 +82,12 @@ class OrganizationCourse(TimeStampedModel):
         unique_together = (('course_id', 'organization'),)
         verbose_name = _('Link Course')
         verbose_name_plural = _('Link Courses')
+
+    def __str__(self):
+        return u"OrganizationCourse<{org}, {course})>".format(
+            org=self.organization.short_name,
+            course=self.course_id,
+        )
 
 
 @python_2_unicode_compatible

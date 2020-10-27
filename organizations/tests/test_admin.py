@@ -38,8 +38,10 @@ class OrganizationsAdminTestCase(utils.OrganizationsTestCaseBase):
         """
         Test: organization default fields should be name, description and active.
         """
+        tahoe_added_fields = ['sites', 'edx_uuid']
+
         self.assertEqual(list(self.org_admin.get_form(self.request).base_fields),
-                         ['name', 'short_name', 'description', 'logo', 'active'])
+                         ['name', 'short_name', 'description', 'logo', 'active'] + tahoe_added_fields)
 
     def test_organization_actions(self):
         """

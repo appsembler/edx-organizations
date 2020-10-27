@@ -1,4 +1,4 @@
 """
 edx-organizations app initialization module
 """
-__version__ = '0.4.12-appsembler5'  # pragma: no cover
+__version__ = '1.0.0-appsembler6'  # pragma: no cover

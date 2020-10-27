@@ -1,13 +1,14 @@
 """
 Organizations Admin Module Test Cases
 """
+from __future__ import unicode_literals
 from django.contrib.admin.sites import AdminSite
 from django.contrib.messages.storage.fallback import FallbackStorage
 from django.http import HttpRequest
 
 import organizations.tests.utils as utils
 from organizations.admin import OrganizationAdmin, OrganizationCourseAdmin
-from organizations.models import (Organization, OrganizationCourse)
+from organizations.models import Organization, OrganizationCourse
 
 
 def create_organization(active=True):
@@ -37,8 +38,10 @@ class OrganizationsAdminTestCase(utils.OrganizationsTestCaseBase):
         """
         Test: organization default fields should be name, description and active.
         """
+        tahoe_added_fields = ['sites', 'edx_uuid']
+
         self.assertEqual(list(self.org_admin.get_form(self.request).base_fields),
-                         ['name', 'short_name', 'description', 'logo', 'active'])
+                         ['name', 'short_name', 'description', 'logo', 'active'] + tahoe_added_fields)
 
     def test_organization_actions(self):
         """
@@ -62,7 +65,7 @@ class OrganizationsAdminTestCase(utils.OrganizationsTestCaseBase):
         """
         Test: action deactivate_selected should deactivate the multiple activated organization.
         """
-        for __ in xrange(2):
+        for __ in range(2):
             create_organization(active=True)
         queryset = Organization.objects.all()
         self.org_admin.deactivate_selected(self.request, queryset)
@@ -82,7 +85,7 @@ class OrganizationsAdminTestCase(utils.OrganizationsTestCaseBase):
         """
         Test: action activate_selected should activate the multiple deactivated organization.
         """
-        for __ in xrange(2):
+        for __ in range(2):
             create_organization(active=True)
         queryset = Organization.objects.all()
         self.org_admin.activate_selected(self.request, queryset)
@@ -107,7 +110,7 @@ class OrganizationCourseAdminTestCase(utils.OrganizationsTestCaseBase):
         create_organization(active=True)
         self.assertEqual(
             list(self.org_course_admin.get_form(self.request).base_fields['organization'].widget.choices),
-            [('', '---------'), (1, u'test organization ()')]
+            [('', '---------'), (1, 'test organization ()')]
         )
 
     def test_foreign_key_field_inactive_choices(self):

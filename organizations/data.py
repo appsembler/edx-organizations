@@ -23,6 +23,7 @@ if getattr(settings, 'TEST_MODE', False):
 else:
     import organizations.resources as remote
 """
+from six import text_type
 from . import exceptions
 from . import models as internal
 from . import serializers
@@ -207,7 +208,7 @@ def create_organization_course(organization, course_key):
     try:
         relationship = internal.OrganizationCourse.objects.get(
             organization=organization_obj,
-            course_id=unicode(course_key)
+            course_id=text_type(course_key)
         )
         # If the relationship exists, but was inactivated, we can simply turn it back on
         if not relationship.active:
@@ -215,7 +216,7 @@ def create_organization_course(organization, course_key):
     except internal.OrganizationCourse.DoesNotExist:
         relationship = internal.OrganizationCourse.objects.create(
             organization=organization_obj,
-            course_id=unicode(course_key),
+            course_id=text_type(course_key),
             active=True
         )
 
@@ -228,7 +229,7 @@ def delete_organization_course(organization, course_key):
     try:
         relationship = internal.OrganizationCourse.objects.get(
             organization=organization['id'],
-            course_id=unicode(course_key),
+            course_id=text_type(course_key),
             active=True,
         )
         _inactivate_organization_course_relationship(relationship)
@@ -255,7 +256,7 @@ def fetch_course_organizations(course_key):
     Retrieves the organizations linked to the specified course
     """
     queryset = internal.OrganizationCourse.objects.filter(
-        course_id=unicode(course_key),
+        course_id=text_type(course_key),
         active=True
     ).select_related('organization')
     return [serializers.serialize_organization_with_course(organization) for organization in queryset]
@@ -266,6 +267,6 @@ def delete_course_references(course_key):
     Inactivates references to course keys within this app (ref: receivers.py and api.py)
     """
     [_inactivate_record(record) for record in internal.OrganizationCourse.objects.filter(
-        course_id=unicode(course_key),
+        course_id=text_type(course_key),
         active=True
     )]

@@ -72,6 +72,9 @@ class OrganizationCourseAdmin(admin.ModelAdmin):
 
 @admin.register(UserOrganizationMapping)
 class UserOrganizationMappingAdmin(admin.ModelAdmin):
+    """
+    Many to many admin for Organization/User membership.
+    """
     list_display = [
         'email',
         'username',
@@ -93,10 +96,13 @@ class UserOrganizationMappingAdmin(admin.ModelAdmin):
     ]
 
     def email(self, mapping):
+        """Display user email."""
         return mapping.user.email
 
     def username(self, mapping):
+        """Display username."""
         return mapping.user.username
 
     def organization_name(self, mapping):
+        """Display organization name."""
         return mapping.organization.short_name

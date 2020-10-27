@@ -49,13 +49,21 @@ class Organization(TimeStampedModel):
         return u"{name} ({short_name})".format(name=self.name, short_name=self.short_name)
 
     def get_tier_for_org(self):
-        from tiers.models import Tier
-        t = Tier.objects.defer('organization').get(organization__edx_uuid=self.edx_uuid)
-        tier_object = Tier(name=t.name,
-                tier_enforcement_exempt=t.tier_enforcement_exempt,
-                tier_enforcement_grace_period=t.tier_enforcement_grace_period,
-                tier_expires_at=t.tier_expires_at,
-                organization=self)
+        """
+        Get the Tier for the organization.
+
+        Hack: This queries the django-tier database in a rather hacky way.
+              It's a tech-debt that should be refactored after we have a SiteConfiguration service.
+        """
+        from tiers.models import Tier  # pylint: disable=import-error
+        tier = Tier.objects.defer('organization').get(organization__edx_uuid=self.edx_uuid)
+        tier_object = Tier(
+            name=tier.name,
+            tier_enforcement_exempt=tier.tier_enforcement_exempt,
+            tier_enforcement_grace_period=tier.tier_enforcement_grace_period,
+            tier_expires_at=tier.tier_expires_at,
+            organization=self,
+        )
         return tier_object
 
     def clean(self):
@@ -84,27 +92,41 @@ class OrganizationCourse(TimeStampedModel):
         verbose_name_plural = _('Link Courses')
 
     def __str__(self):
+        org = self.organization
         return u"OrganizationCourse<{org}, {course})>".format(
-            org=self.organization.short_name,
+            org=org.short_name,
             course=self.course_id,
         )
 
 
 @python_2_unicode_compatible
 class UserOrganizationMapping(models.Model):
+    """
+    User membership in an organization.
+
+    Tahoe's fundmential multi-site relashionship.
+    """
+
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
     organization = models.ForeignKey(Organization)
     is_active = models.BooleanField(default=True)
     is_amc_admin = models.BooleanField(default=False)
 
     def __str__(self):
+        org = self.organization
         return 'UserOrganizationMapping<{email}, {organization}>'.format(
-            email=self.user.email,
-            organization=self.organization.short_name,
+            email=self.user.email,  # pylint: disable=no-member
+            organization=org.short_name,
         )
 
 
 class UserSiteMapping(models.Model):
+    """
+    User membership in a site.
+
+    Deprecated: Not used by Tahoe. Should be removed.
+    """
+
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
     site = models.ForeignKey(Site)
     is_active = models.BooleanField(default=True)

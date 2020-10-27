@@ -12,6 +12,7 @@ from django.conf import settings
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 from model_utils.models import TimeStampedModel
+from simple_history.models import HistoricalRecords
 
 
 @python_2_unicode_compatible
@@ -44,6 +45,8 @@ class Organization(TimeStampedModel):
         related_name='organizations',
     )
     edx_uuid = models.UUIDField(default=uuid.uuid4, unique=True)
+
+    history = HistoricalRecords()
 
     def __str__(self):
         return u"{name} ({short_name})".format(name=self.name, short_name=self.short_name)
@@ -82,7 +85,7 @@ class OrganizationCourse(TimeStampedModel):
     of specifying course identifier strings in this model.
     """
     course_id = models.CharField(max_length=255, db_index=True, verbose_name='Course ID')
-    organization = models.ForeignKey(Organization, db_index=True)
+    organization = models.ForeignKey(Organization, db_index=True, on_delete=models.CASCADE)
     active = models.BooleanField(default=True)
 
     class Meta(object):

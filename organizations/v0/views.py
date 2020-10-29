@@ -1,4 +1,3 @@
-# pylint: disable=too-many-ancestors
 """
 Views for organizations end points.
 """
@@ -10,7 +9,6 @@ from rest_framework import viewsets
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework_oauth.authentication import OAuth2Authentication
 
 from organizations.models import Organization
 from organizations.permissions import UserIsStaff
@@ -23,10 +21,10 @@ class OrganizationsViewSet(mixins.UpdateModelMixin, viewsets.ReadOnlyModelViewSe
         - fetch list organization data or single organization using organization short name.
         - create or update an organization via the PUT endpoint.
     """
-    queryset = Organization.objects.filter(active=True)  # pylint: disable=no-member
+    queryset = Organization.objects.filter(active=True)
     serializer_class = OrganizationSerializer
     lookup_field = 'short_name'
-    authentication_classes = (OAuth2Authentication, JwtAuthentication, SessionAuthentication)
+    authentication_classes = (JwtAuthentication, SessionAuthentication)
     permission_classes = (IsAuthenticated, UserIsStaff)
 
     def update(self, request, *args, **kwargs):

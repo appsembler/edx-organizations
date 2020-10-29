@@ -2,4 +2,4 @@
 edx-organizations app initialization module
 """
 
-__version__ = '2.0.3-appsembler7'  # pragma: no cover
+__version__ = '2.1.0-appsembler8'  # pragma: no cover

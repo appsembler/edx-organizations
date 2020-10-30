@@ -110,8 +110,8 @@ class UserOrganizationMapping(models.Model):
     Tahoe's fundmential multi-site relashionship.
     """
 
-    user = models.ForeignKey(settings.AUTH_USER_MODEL)
-    organization = models.ForeignKey(Organization)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
     is_active = models.BooleanField(default=True)
     is_amc_admin = models.BooleanField(default=False)
 
@@ -130,7 +130,7 @@ class UserSiteMapping(models.Model):
     Deprecated: Not used by Tahoe. Should be removed.
     """
 
-    user = models.ForeignKey(settings.AUTH_USER_MODEL)
-    site = models.ForeignKey(Site)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    site = models.ForeignKey(Site, on_delete=models.CASCADE)
     is_active = models.BooleanField(default=True)
     is_amc_admin = models.BooleanField(default=False)

@@ -10,6 +10,9 @@ from rest_framework import serializers
 from organizations import models
 
 
+TAHOE_FIELDS = ('sites', 'users', 'edx_uuid',)
+
+
 class OrganizationSerializer(serializers.ModelSerializer):
     """ Serializes the Organization object."""
     logo_url = serializers.CharField(write_only=True, required=False)
@@ -17,7 +20,7 @@ class OrganizationSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Organization
         fields = ('id', 'created', 'modified', 'name', 'short_name', 'description', 'logo',
-                  'active', 'logo_url',)
+                  'active', 'logo_url',) + TAHOE_FIELDS
 
     def update_logo(self, obj, logo_url):
         if logo_url:

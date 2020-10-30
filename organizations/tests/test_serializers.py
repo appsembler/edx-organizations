@@ -37,4 +37,4 @@ class TestOrganizationSerializer(TestCase):
             "modified": self.organization.modified.strftime(api_settings.DATETIME_FORMAT)
         }
         expected.update(**tahoe_added_fields)
-        self.assertEqual(serialize_data.data, expected)
+        assert serialize_data.data == expected

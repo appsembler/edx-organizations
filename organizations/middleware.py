@@ -3,7 +3,7 @@ Tahoe middlewares for the organizations app.
 """
 
 
-class OrganizationMiddleware(object):
+class OrganizationMiddleware:
     """
     Organization middleware
     """

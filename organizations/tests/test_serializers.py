@@ -19,13 +19,6 @@ class TestOrganizationSerializer(TestCase):
     def test_data(self):
         """ Verify that OrganizationSerializer serialize data correctly."""
         serialize_data = OrganizationSerializer(self.organization)
-
-        tahoe_added_fields = {
-            'users': [],
-            'sites': [],
-            'edx_uuid': str(self.organization.edx_uuid),
-        }
-
         expected = {
             "id": self.organization.id,
             "name": self.organization.name,
@@ -36,5 +29,4 @@ class TestOrganizationSerializer(TestCase):
             "created": self.organization.created.strftime(api_settings.DATETIME_FORMAT),
             "modified": self.organization.modified.strftime(api_settings.DATETIME_FORMAT)
         }
-        expected.update(**tahoe_added_fields)
         self.assertEqual(serialize_data.data, expected)

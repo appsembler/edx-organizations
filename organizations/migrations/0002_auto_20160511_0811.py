@@ -20,8 +20,8 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('is_active', models.BooleanField(default=False)),
-                ('organization', models.ForeignKey(to='organizations.Organization')),
-                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
+                ('organization', models.ForeignKey(to='organizations.Organization', on_delete=models.CASCADE)),
+                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)),
             ],
         ),
         migrations.AddField(

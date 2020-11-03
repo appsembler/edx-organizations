@@ -21,8 +21,8 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('is_active', models.BooleanField(default=True)),
                 ('is_amc_admin', models.BooleanField(default=False)),
-                ('site', models.ForeignKey(to='sites.Site')),
-                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
+                ('site', models.ForeignKey(to='sites.Site', on_delete=models.CASCADE)),
+                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)),
             ],
         ),
     ]

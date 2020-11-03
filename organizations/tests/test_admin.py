@@ -4,11 +4,12 @@ Organizations Admin Module Test Cases
 from __future__ import unicode_literals
 from django.contrib.admin.sites import AdminSite
 from django.contrib.messages.storage.fallback import FallbackStorage
-from django.http import HttpRequest
+from django.test import RequestFactory
 
 import organizations.tests.utils as utils
 from organizations.admin import OrganizationAdmin, OrganizationCourseAdmin
 from organizations.models import Organization, OrganizationCourse
+from organizations.tests.factories import UserFactory
 
 
 def create_organization(active=True):
@@ -29,9 +30,11 @@ class OrganizationsAdminTestCase(utils.OrganizationsTestCaseBase):
 
     def setUp(self):
         super(OrganizationsAdminTestCase, self).setUp()
-        self.request = HttpRequest()
         self.org_admin = OrganizationAdmin(Organization, AdminSite())
+        self.request = RequestFactory().get('/admin')
+        self.admin_user = UserFactory(is_staff=True)
         self.request.session = 'session'
+        self.request.user = self.admin_user
         self.request._messages = FallbackStorage(self.request)  # pylint: disable=protected-access
 
     def test_default_fields(self):
@@ -39,7 +42,6 @@ class OrganizationsAdminTestCase(utils.OrganizationsTestCaseBase):
         Test: organization default fields should be name, description and active.
         """
         tahoe_added_fields = ['sites', 'edx_uuid']
-
         self.assertEqual(list(self.org_admin.get_form(self.request).base_fields),
                          ['name', 'short_name', 'description', 'logo', 'active'] + tahoe_added_fields)
 
@@ -100,7 +102,7 @@ class OrganizationCourseAdminTestCase(utils.OrganizationsTestCaseBase):
 
     def setUp(self):
         super(OrganizationCourseAdminTestCase, self).setUp()
-        self.request = HttpRequest()
+        self.request = RequestFactory().get('')
         self.org_course_admin = OrganizationCourseAdmin(OrganizationCourse, AdminSite())
 
     def test_foreign_key_field_active_choices(self):

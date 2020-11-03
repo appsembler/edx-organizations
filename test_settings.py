@@ -14,6 +14,7 @@ DATABASES = {
 }
 
 INSTALLED_APPS = (
+    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -21,13 +22,11 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'organizations',
     'django_nose',
-    'provider.oauth2',
 )
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
 )
 
@@ -39,3 +38,17 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'DATETIME_FORMAT': '%Y-%m-%dT%H:%M:%SZ'
 }
+
+# Django requires this for admin usage.
+TEMPLATES = [
+    {
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": {
+                "django.contrib.auth.context_processors.auth",  # this is required for admin
+                "django.contrib.messages.context_processors.messages",
+            }
+        }
+    },
+]

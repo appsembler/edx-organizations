@@ -50,7 +50,6 @@ class TestAuthBackends(TestCase):
         # plain user not member of org in Site's configuration should fail
         authed = self.orgMemberBackend.authenticate(self.request, username='userB', password='test')
         self.assertEqual(authed, None)
-        self.assertTrue(False)
 
     def test_org_member_auth_fails_if_siteconfig_does_not_have_org(self, _):
         """

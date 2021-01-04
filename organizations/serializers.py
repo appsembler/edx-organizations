@@ -10,6 +10,9 @@ from organizations import models
 # pylint: disable=too-few-public-methods
 class OrganizationSerializer(serializers.ModelSerializer):
     """ Serializes the Organization object."""
+    sites = serializers.SlugRelatedField(many=True, read_only=True, slug_field='domain')
+    users = serializers.SlugRelatedField(many=True, read_only=True, slug_field='username')
+
     class Meta(object):  # pylint: disable=missing-docstring
         model = models.Organization
         fields = '__all__'

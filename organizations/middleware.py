@@ -1,6 +1,6 @@
 from opaque_keys.edx.keys import CourseKey
-from site_configuration.helpers import is_site_configuration_enabled
-from site_configuration.models import SiteConfiguration
+from openedx.core.djangoapps.site_configuration.helpers import is_site_configuration_enabled
+from openedx.core.djangoapps.site_configuration.models import SiteConfiguration
 
 
 class OrganizationMiddleware(object):

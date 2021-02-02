@@ -79,7 +79,7 @@ class OrganizationMemberBackend(ModelBackend):
                 if org in user_organizations:
                     return user
             return None
-        elif user.is_superuser:
+        elif user and user.is_superuser:
             return user
         return None
 

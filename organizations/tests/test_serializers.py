@@ -27,6 +27,10 @@ class TestOrganizationSerializer(TestCase):
             "logo": None,
             "active": self.organization.active,
             "created": self.organization.created.strftime(api_settings.DATETIME_FORMAT),
-            "modified": self.organization.modified.strftime(api_settings.DATETIME_FORMAT)
+            "modified": self.organization.modified.strftime(api_settings.DATETIME_FORMAT),
+            "edx_uuid": self.organization.edx_uuid,
+            "sites": [site.domain for site in self.organization.sites.all()],
+            "users": [user.username for user in self.organization.users.all()]
+
         }
         self.assertEqual(serialize_data.data, expected)

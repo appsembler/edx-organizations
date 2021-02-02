@@ -38,7 +38,7 @@ class OrganizationsAdminTestCase(utils.OrganizationsTestCaseBase):
         Test: organization default fields should be name, description and active.
         """
         self.assertEqual(list(self.org_admin.get_form(self.request).base_fields),
-                         ['name', 'short_name', 'description', 'logo', 'active'])
+                         ['name', 'short_name', 'description', 'logo', 'active', 'sites', 'edx_uuid'])
 
     def test_organization_actions(self):
         """

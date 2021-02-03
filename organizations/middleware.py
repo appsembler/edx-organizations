@@ -31,7 +31,8 @@ class CurrentSiteByCourseOrgMiddleware(object):
             org = CourseKey.from_string(course_id).org
 
             # TODO: this is ugly. borrowed from our SiteConfiguration.get_value_by_org
-            for configuration in SiteConfiguration.objects.filter(values__contains=org, enabled=True).defer('page_elements', 'sass_variables').all():
+            # can't defer page_elements with jsonfield 2.0.2 and Django 1.11 https://github.com/rpkilby/jsonfield/issues/198
+            for configuration in SiteConfiguration.objects.filter(values__contains=org, enabled=True).defer('sass_variables').all():
                 course_org_filter = configuration.get_value('course_org_filter', [])
                 if not isinstance(course_org_filter, list):
                     course_org_filter = [course_org_filter]
@@ -42,7 +43,6 @@ class CurrentSiteByCourseOrgMiddleware(object):
 
             if site:
                 request.site = site
-            return
         else:
             # preserve request.site set from django.contrib.sites.middleware
             return

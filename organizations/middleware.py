@@ -25,6 +25,7 @@ class CurrentSiteByCourseOrgMiddleware(object):
     """
     def process_request(self, request):
         if is_site_configuration_enabled():
+            site = None
             course_id = request.session.get('course_id', None)  # via courseware.middleware
             if not course_id:
                 return

@@ -9,6 +9,7 @@ from django.contrib.sites.models import Site
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.conf import settings
+from django.db.models.query import QuerySet
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 from model_utils.models import TimeStampedModel
@@ -82,6 +83,13 @@ class OrganizationCourse(TimeStampedModel):
         verbose_name_plural = _('Link Courses')
 
 
+class UOMFiltersQuerySet(QuerySet):
+    def active(self):
+        return self.filter(is_active=True, organization__active=True)
+
+UOMManager = UOMFiltersQuerySet.as_manager
+
+
 @python_2_unicode_compatible
 class UserOrganizationMapping(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
@@ -89,11 +97,15 @@ class UserOrganizationMapping(models.Model):
     is_active = models.BooleanField(default=True)
     is_amc_admin = models.BooleanField(default=False)
 
+    objects = UOMManager()
+
     def __str__(self):
-        return 'UserOrganizationMapping<{email}, {organization}>'.format(
+        return 'UserOrganizationMapping <{email}, {organization} - {active}>'.format(
             email=self.user.email,
             organization=self.organization.short_name,
+            active="active" if self.is_active else "inactive"
         )
+
 
 
 class UserSiteMapping(models.Model):

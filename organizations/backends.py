@@ -3,7 +3,7 @@ Authentication backends for Tahoe's multi-tenancy.
 """
 
 from django.conf import settings
-from django.contrib.auth.backends import ModelBackend
+from django.contrib.auth.backends import AllowAllUsersModelBackend, ModelBackend
 from openedx.core.djangoapps.theming.helpers import get_current_site  # pylint: disable=import-error
 from openedx.core.djangoapps.site_configuration.helpers import (  # pylint: disable=import-error
     is_site_configuration_enabled,
@@ -33,13 +33,29 @@ class DefaultSiteBackend(ModelBackend):
         return None
 
 
-class OrganizationMemberBackend(ModelBackend):
-    """
-    Extension of the regular ModelBackend that will check what Organizations are tied to the
-    current microsite and compare that to the Organizations the user trying to log in belongs to.
-    If there is a match between the two, the user is allowed to log in.
-    """
+class OrganizationMemberBackend(AllowAllUsersModelBackend):
+    """Backend for organization based authentication
 
+    This class is an extension of Django's `AllowAllUserModelBackend`
+
+    This class checks that the user to authenticate belongs to one of the
+    organizations in the specified site
+
+    This class extends `AllowAllUserModelBackend` instead of `ModelBackend`
+    because users need to be able to authenticate when the `user.is_active` is
+    `False`. The reason for this is that Open edX has an email verification
+    scheme that uses `User.is_active` in order to prevent user activity until
+    the users have verified their email. Effectively, edx-platform LMS user
+    authentication state is used to manage authorization state.
+
+    The key problem is that Django's `django.contrib.auth.backends.ModelBackend`
+    is called with `not user.is_active` and Ironwood introduced a check to test
+    authentication on a not yet authorized user. This breaks Tahoe multisite
+    behavior. Extending `AllowAllUsersModelBackend` restores correct behavior.
+
+    For further reference, see settings files and read Django documentation for
+    `AUTHENTICATION_BACKENDS`
+    """
     def authenticate(self, *args, **kwargs):  # pylint: disable=arguments-differ
         """
         Authenticate organization learners.

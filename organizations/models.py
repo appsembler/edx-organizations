@@ -121,16 +121,3 @@ class UserOrganizationMapping(models.Model):
             email=self.user.email,  # pylint: disable=no-member
             organization=org.short_name,
         )
-
-
-class UserSiteMapping(models.Model):
-    """
-    User membership in a site.
-
-    Deprecated: Not used by Tahoe. Should be removed.
-    """
-
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    site = models.ForeignKey(Site, on_delete=models.CASCADE)
-    is_active = models.BooleanField(default=True)
-    is_amc_admin = models.BooleanField(default=False)

@@ -70,25 +70,3 @@ class OrganizationMemberBackend(AllowAllUsersModelBackend):
             if site_organization in user_organizations:
                 return user
         return None
-
-
-class SiteMemberBackend(ModelBackend):
-    """
-    Extension of the regular ModelBackend that will check whether the user is a member of the currently
-    active site.
-
-    Deprecated: Should be removed because `UserSiteMapping` should be removed.
-    """
-
-    def authenticate(self, *args, **kwargs):  # pylint: disable=arguments-differ
-        """
-        Authenticate organization learners.
-        """
-        user = super(SiteMemberBackend, self).authenticate(*args, **kwargs)
-        # superuser can log into any microsite
-        site = get_current_site()
-        is_default_site = site.id == settings.SITE_ID
-        if not is_default_site and is_site_configuration_enabled() and user and not user.is_superuser:
-            if user.id in site.usersitemapping_set.select_related('user').values_list('user__id', flat=True):
-                return user
-        return None

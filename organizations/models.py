@@ -48,6 +48,9 @@ class Organization(TimeStampedModel):
 
     history = HistoricalRecords()
 
+    class Meta:
+        app_label = 'organizations'
+
     def __str__(self):
         return u"{name} ({short_name})".format(name=self.name, short_name=self.short_name)
 
@@ -76,7 +79,6 @@ class Organization(TimeStampedModel):
                                     'and underscore (_).'))
 
 
-@python_2_unicode_compatible
 class OrganizationCourse(TimeStampedModel):
     """
     An OrganizationCourse represents the link between an Organization and a
@@ -93,6 +95,7 @@ class OrganizationCourse(TimeStampedModel):
         unique_together = (('course_id', 'organization'),)
         verbose_name = _('Link Course')
         verbose_name_plural = _('Link Courses')
+        app_label = 'organizations'
 
     def __str__(self):
         org = self.organization
@@ -102,7 +105,6 @@ class OrganizationCourse(TimeStampedModel):
         )
 
 
-@python_2_unicode_compatible
 class UserOrganizationMapping(models.Model):
     """
     User membership in an organization.
@@ -114,6 +116,9 @@ class UserOrganizationMapping(models.Model):
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
     is_active = models.BooleanField(default=True)
     is_amc_admin = models.BooleanField(default=False)
+
+    class Meta:
+        app_label = 'organizations'
 
     def __str__(self):
         org = self.organization

@@ -44,7 +44,7 @@ pbr==5.4.5                # via -r requirements/base.txt, stevedore
 pillow==7.1.2             # via -r requirements/base.txt
 pluggy==0.13.1            # via pytest, tox
 psutil==1.2.1             # via -r requirements/base.txt, edx-django-utils
-py==1.8.1                 # via pytest, tox
+py==1.10.0                 # via pytest, tox
 pycodestyle==2.5.0        # via -r requirements/test.in
 pycryptodomex==3.9.7      # via -r requirements/base.txt, pyjwkest
 pyjwkest==1.4.2           # via -r requirements/base.txt, edx-drf-extensions

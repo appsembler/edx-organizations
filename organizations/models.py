@@ -4,8 +4,6 @@ Please do not integrate directly with these models!!!  This app currently
 offers one programmatic API -- api.py for direct Python integration.
 """
 import re
-import uuid
-from django.contrib.sites.models import Site
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.conf import settings
@@ -35,17 +33,10 @@ class Organization(TimeStampedModel):
         null=True, blank=True, max_length=255
     )
     active = models.BooleanField(default=True)
-    users = models.ManyToManyField(
-        settings.AUTH_USER_MODEL,
-        through='UserOrganizationMapping',
-        related_name="organizations"
-    )
     sites = models.ManyToManyField(
         'sites.Site',
         related_name='organizations',
     )
-    edx_uuid = models.UUIDField(default=uuid.uuid4, unique=True)
-
     history = HistoricalRecords()
 
     class Meta:
@@ -53,24 +44,6 @@ class Organization(TimeStampedModel):
 
     def __str__(self):
         return u"{name} ({short_name})".format(name=self.name, short_name=self.short_name)
-
-    def get_tier_for_org(self):
-        """
-        Get the Tier for the organization.
-
-        Hack: This queries the django-tier database in a rather hacky way.
-              It's a tech-debt that should be refactored after we have a SiteConfiguration service.
-        """
-        from tiers.models import Tier  # pylint: disable=import-error
-        tier = Tier.objects.defer('organization').get(organization__edx_uuid=self.edx_uuid)
-        tier_object = Tier(
-            name=tier.name,
-            tier_enforcement_exempt=tier.tier_enforcement_exempt,
-            tier_enforcement_grace_period=tier.tier_enforcement_grace_period,
-            tier_expires_at=tier.tier_expires_at,
-            organization=self,
-        )
-        return tier_object
 
     def clean(self):
         if not re.match("^[a-zA-Z0-9._-]*$", self.short_name):
@@ -102,27 +75,4 @@ class OrganizationCourse(TimeStampedModel):
         return u"OrganizationCourse<{org}, {course})>".format(
             org=org.short_name,
             course=self.course_id,
-        )
-
-
-class UserOrganizationMapping(models.Model):
-    """
-    User membership in an organization.
-
-    Tahoe's fundmential multi-site relashionship.
-    """
-
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
-    is_active = models.BooleanField(default=True)
-    is_amc_admin = models.BooleanField(default=False)
-
-    class Meta:
-        app_label = 'organizations'
-
-    def __str__(self):
-        org = self.organization
-        return 'UserOrganizationMapping<{email}, {organization}>'.format(
-            email=self.user.email,  # pylint: disable=no-member
-            organization=org.short_name,
         )

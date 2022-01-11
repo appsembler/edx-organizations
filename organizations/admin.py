@@ -3,7 +3,6 @@ from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
 
 from organizations.models import Organization, OrganizationCourse
-from organizations.models import UserOrganizationMapping
 
 
 @admin.register(Organization)
@@ -69,41 +68,3 @@ class OrganizationCourseAdmin(admin.ModelAdmin):
             kwargs['queryset'] = Organization.objects.filter(active=True).order_by('name')
 
         return super(OrganizationCourseAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
-
-
-@admin.register(UserOrganizationMapping)
-class UserOrganizationMappingAdmin(admin.ModelAdmin):
-    """
-    Many to many admin for Organization/User membership.
-    """
-    list_display = [
-        'email',
-        'username',
-        'organization_name',
-        'is_active',
-        'is_amc_admin',
-    ]
-
-    search_fields = [
-        'user__email',
-        'user__username',
-        'organization__name',
-        'organization__short_name',
-    ]
-
-    list_filter = [
-        'is_active',
-        'is_amc_admin',
-    ]
-
-    def email(self, mapping):
-        """Display user email."""
-        return mapping.user.email
-
-    def username(self, mapping):
-        """Display username."""
-        return mapping.user.username
-
-    def organization_name(self, mapping):
-        """Display organization name."""
-        return mapping.organization.short_name

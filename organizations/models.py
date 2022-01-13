@@ -33,10 +33,6 @@ class Organization(TimeStampedModel):
         null=True, blank=True, max_length=255
     )
     active = models.BooleanField(default=True)
-    sites = models.ManyToManyField(
-        'sites.Site',
-        related_name='organizations',
-    )
     history = HistoricalRecords()
 
     class Meta:
